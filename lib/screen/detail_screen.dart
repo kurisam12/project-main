@@ -23,7 +23,7 @@ class DetailScreen extends StatelessWidget {
         return {
           'title': 'Kekeruhan',
           'value': data.turbidity,
-          'unit': 'NTU',
+          'unit': 'PPM',
           'icon': Icons.opacity_rounded,
           'color': Colors.amber[700]!,
         };

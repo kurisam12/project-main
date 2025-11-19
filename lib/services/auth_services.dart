@@ -1,26 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseDatabase _db = FirebaseDatabase.instance;
 
-  // Variabel untuk menyimpan Session ID di memori HP ini
-  String? _localSessionId;
-  String? get localSessionId => _localSessionId;
+  String? _verificationToken;
+  String? get verificationToken => _verificationToken;
 
-  // Setter untuk memperbarui session ID lokal (dipakai saat app restart)
-  void setLocalSessionId(String id) {
-    _localSessionId = id;
-    // Tidak perlu notifyListeners di sini untuk mencegah rebuild berulang
+  Stream<User?> get user => _auth.authStateChanges();
+
+  AuthService() {
+    loadTokenFromStorage();
   }
 
-  Stream<User?> get user {
-    return _auth.authStateChanges();
+  Future<void> loadTokenFromStorage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _verificationToken = prefs.getString('auth_token');
+    notifyListeners(); 
   }
 
-  // Fungsi Login
+  // --- 1. LOGIN ---
   Future<User?> signInWithEmailPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -29,23 +31,18 @@ class AuthService extends ChangeNotifier {
       );
 
       if (result.user != null) {
-        await _updateSession(result.user!.uid);
+        await _updateToken(result.user!.uid);
       }
       
       return result.user;
     } catch (e) {
-      print("Error during sign in: $e");
+      print("Error Login: $e");
       return null;
     }
   }
 
-  // Fungsi Logout
-  Future<void> signOut() async {
-    _localSessionId = null; // Hapus sesi lokal
-    await _auth.signOut();
-  }
-  
-  // Fungsi Sign Up
+  // --- 2. DAFTAR BARU (SIGN UP) ---
+  // Fungsi ini ditambahkan untuk menangani pendaftaran akun baru
   Future<User?> signUpWithEmailPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -54,29 +51,43 @@ class AuthService extends ChangeNotifier {
       );
 
       if (result.user != null) {
-        await _updateSession(result.user!.uid);
+        // User baru juga perlu token agar tidak langsung di-kick
+        await _updateToken(result.user!.uid);
       }
 
       return result.user;
     } catch (e) {
-      print("Error during sign up: $e");
+      print("Error Sign Up: $e");
       return null;
     }
   }
 
-  // -- LOGIKA KHUSUS SINGLE SESSION --
-  // Fungsi ini membuat ID unik (timestamp) dan upload ke Firestore
-  Future<void> _updateSession(String uid) async {
-    String newSessionId = DateTime.now().millisecondsSinceEpoch.toString();
+  // --- 3. LOGOUT ---
+  Future<void> signOut() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token'); 
     
-    // 1. Simpan di HP ini
-    _localSessionId = newSessionId;
+    _verificationToken = null; 
+    notifyListeners();
 
-    // 2. Simpan di Server (Firestore)
-    await _firestore.collection('users').doc(uid).set({
-      'current_session_id': newSessionId,
-      'last_login': FieldValue.serverTimestamp(),
-      'email': _auth.currentUser?.email,
-    }, SetOptions(merge: true));
+    await _auth.signOut();
+  }
+  
+  // --- 4. UPDATE TOKEN ---
+  Future<void> _updateToken(String uid) async {
+    String newToken = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    _verificationToken = newToken;
+    notifyListeners(); 
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', newToken);
+
+    DatabaseReference ref = _db.ref("users/$uid");
+    await ref.update({
+      "token": newToken,
+      "last_login": DateTime.now().toString(),
+      "email": _auth.currentUser?.email,
+    });
   }
 }

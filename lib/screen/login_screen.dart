@@ -10,23 +10,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Gunakan akun demo agar user bisa langsung mencoba
-  final _emailController = TextEditingController(text: 'demo@iwaq.com');
-  final _passwordController = TextEditingController(text: 'iwaq123');
+  // Controller tetap kosong agar tidak ada auto-fill
+  final _emailController = TextEditingController(); 
+  final _passwordController = TextEditingController();
+  
   final _formKey = GlobalKey<FormState>();
 
-  // Fungsi untuk proses Login
-  Future<void> _submit() async {
+  // Fungsi Login
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final authService = Provider.of<AuthService>(context, listen: false);
       
       final user = await authService.signInWithEmailPassword(
-        _emailController.text,
+        _emailController.text.trim(),
         _passwordController.text,
       );
 
       if (user == null) {
-        // Tampilkan pesan error jika login gagal
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Login Gagal. Cek email dan password.'),
@@ -37,33 +38,42 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
   
-  // Fungsi untuk membuat akun demo (jika belum ada)
-  Future<void> _createDemoAccount() async {
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final user = await authService.signUpWithEmailPassword(
-      'admin@gmail.com',
-      'iwaq123'
-    );
-    if (user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Akun demo berhasil dibuat. Silahkan Masuk!'),
-          backgroundColor: Colors.green,
-        ),
+  // Fungsi Daftar Baru (Menggantikan Demo)
+  Future<void> _handleRegister() async {
+    // Validasi input dulu sebelum daftar
+    if (_formKey.currentState!.validate()) {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      
+      // Panggil fungsi signUp yang baru kita buat di AuthService
+      final user = await authService.signUpWithEmailPassword(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
-    } else {
-       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Akun demo sudah ada. Silahkan Masuk.'),
-          backgroundColor: Colors.amber,
-        ),
-      );
+      
+      if (!mounted) return;
+
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Akun berhasil dibuat. Anda otomatis masuk!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal membuat akun. Email mungkin sudah terpakai atau password terlalu lemah (min 6 karakter).'),
+            backgroundColor: Colors.amber,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32.0),
@@ -101,6 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
+                    hintText: 'Contoh: user@gmail.com', 
+                    hintStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     prefixIcon: Icon(Icons.email),
                   ),
@@ -114,6 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
+                    hintText: 'Masukkan password',
+                    hintStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                     prefixIcon: Icon(Icons.lock),
                   ),
@@ -124,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Tombol Login
                 ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1E88E5),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -138,10 +152,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Tombol untuk mendaftar akun demo
+                
+                // Tombol Daftar (Modifikasi Disini)
                 TextButton(
-                  onPressed: _createDemoAccount,
-                  child: const Text('Buat Akun Demo (demo@iwaq.com)'),
+                  onPressed: _handleRegister,
+                  child: const Text('Belum punya akun? Daftar Baru'),
                 ),
               ],
             ),
