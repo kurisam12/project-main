@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "745750674380",
+    "firebase_url": "https://loginlogout03tkk24-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "loginlogout03tkk24",
+    "storage_bucket": "loginlogout03tkk24.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745750674380:android:1888e5764ae28e2977bb69",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMQiu8L-5AvoiaV0w9ty1S1Oaogyy3dGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745750674380:android:0153bb935a54b4e177bb69",
+        "android_client_info": {
+          "package_name": "com.example.project_3v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMQiu8L-5AvoiaV0w9ty1S1Oaogyy3dGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

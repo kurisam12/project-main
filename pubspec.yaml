@@ -1,0 +1,39 @@
+name: project_iwaq
+description: Aplikasi monitoring sensor air dengan Firebase.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"   # Sesuaikan dengan Flutter 3.53.3 (Dart 3.5.x)
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.2
+
+  # Firebase terbaru compatible Flutter 3.53.3
+  firebase_core: ^3.7.0
+  firebase_auth: ^5.4.0
+  firebase_database: ^11.0.3   # versi terbaru yg kompatibel
+
+
+  # UI icons
+  cupertino_icons: ^1.0.8
+
+  # Chart library kompatibel terbaru
+  fl_chart: ^0.68.0
+
+  cloud_firestore: ^5.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/1.jpg
