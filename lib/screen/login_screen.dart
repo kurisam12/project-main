@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: <Widget>[
                 // Logo Proyek
                 Image.asset(
-                  'assets/1.jpg',
+                  'assets/2.png',
                   height: 100,
                   width: 100,
                   errorBuilder: (context, error, stackTrace) => const Icon(

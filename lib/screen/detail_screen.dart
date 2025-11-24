@@ -123,7 +123,7 @@ class DetailScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const Text('Data Terakhir Diperbarui: Realtime (Simulasi)', style: TextStyle(color: Colors.black54)),
+                        const Text('Data Terakhir Diperbarui: Realtime', style: TextStyle(color: Colors.black54)),
                       ],
                     ),
                   ),
@@ -133,7 +133,7 @@ class DetailScreen extends StatelessWidget {
 
                 // --- Grafik Mini (Simulasi) ---
                 const Text(
-                  'Tren Realtime (Simulasi)',
+                  'Tren Realtime',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),

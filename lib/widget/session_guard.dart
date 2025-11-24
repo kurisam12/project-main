@@ -54,8 +54,7 @@ class _SessionGuardState extends State<SessionGuard> {
 
           // --- LOGIKA KICK ---
           // Bandingkan: Token di Saku Saya vs Token di Server Pusat
-          if (localToken != null && 
-              serverToken != null && 
+          if (serverToken != null && 
               localToken != serverToken && 
               !_isKickingOut) {
             

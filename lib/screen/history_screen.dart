@@ -13,7 +13,7 @@ class HistoryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9FC),
       appBar: AppBar(
-        title: const Text('Riwayat Data Sensor (Simulasi)'),
+        title: const Text('Riwayat Data Sensor'),
         elevation: 1,
         backgroundColor: Colors.white,
       ),

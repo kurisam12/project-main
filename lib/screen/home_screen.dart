@@ -71,7 +71,7 @@ class SensorCard extends StatelessWidget {
             ),
             // Satuan (untuk melengkapi informasi)
             Text(
-              'Detail (Simulasi)',
+              'Detail',
               style: TextStyle(
                 fontSize: 14,
                 color: color.withOpacity(0.7),
@@ -248,7 +248,7 @@ class HomeContent extends StatelessWidget {
                 
                 // Logo Proyek
                 Image.asset(
-                  'assets/1.jpg', 
+                  'assets/2.png', 
                   height: 40,
                   width: 40,
                   errorBuilder: (context, error, stackTrace) => const Icon(
@@ -330,7 +330,7 @@ class HomeContent extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              currentData.isSystemOn ? 'Aktif dan Memantau' : 'Nonaktif (Simulasi)',
+                              currentData.isSystemOn ? 'Aktif dan Memantau' : 'Nonaktif',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: currentData.isSystemOn ? const Color(0xFF1E88E5) : Colors.black54,
